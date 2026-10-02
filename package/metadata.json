@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [{ "Name": "Emil Johansson", "Email": "emil.a.johansson@gmail.com" }],
+        "Category": "Online Services",
+        "Description": "Current and upcoming Diablo II: Resurrected terror zones from d2runewizard.com, with countdowns and notifications for zones you pick.",
+        "EnabledByDefault": true,
+        "Icon": "games-highscores",
+        "Id": "com.github.p145085.d2rterrorzones",
+        "License": "GPL-3.0-or-later",
+        "Name": "D2R Terror Zones",
+        "Version": "1.0.0",
+        "Website": "https://github.com/p145085/plasma-d2r-terrorzones"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

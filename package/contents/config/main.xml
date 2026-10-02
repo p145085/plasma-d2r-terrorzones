@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="watchedZones" type="StringList">
+      <default></default>
+    </entry>
+    <entry name="extraZones" type="StringList">
+      <label>Zone names reported by the API that are not in the built-in list</label>
+      <default></default>
+    </entry>
+    <entry name="notifyOnAnnounce" type="Bool">
+      <label>Notify when a watched zone is announced as the next terror zone</label>
+      <default>true</default>
+    </entry>
+    <entry name="reminderMinutes" type="Int">
+      <label>Remind this many minutes before a watched zone starts (0 = off)</label>
+      <default>5</default>
+    </entry>
+    <entry name="notifyOnStart" type="Bool">
+      <label>Notify when a watched zone becomes terrorized</label>
+      <default>true</default>
+    </entry>
+    <entry name="showCountdownInPanel" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="refreshMinutes" type="Int">
+      <default>5</default>
+    </entry>
+  </group>
+</kcfg>
