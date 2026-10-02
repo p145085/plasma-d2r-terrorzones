@@ -13,7 +13,7 @@ PlasmoidItem {
     readonly property string apiUrl: "https://d2runewizard.com/api/trackers/terror-zone"
     readonly property string siteUrl: "https://d2runewizard.com/terror-zone-tracker"
     readonly property string iconPath: Qt.resolvedUrl("../icons/terror.svg").toString().replace("file://", "")
-    readonly property int hourMs: 3600000
+    readonly property int slotMs: 30 * 60000
 
     property string currentZone: ""
     property string nextZone: ""
@@ -22,15 +22,15 @@ PlasmoidItem {
     property date lastUpdated
     property bool hasData: false
 
-    // Clock, ticked every second. Terror zones rotate at the top of every (UTC) hour.
+    // Clock, ticked every second. Terror zones rotate every 30 minutes, on the hour and half hour.
     property real now: Date.now()
-    readonly property int hourIdx: Math.floor(now / hourMs)
-    readonly property real msLeft: (hourIdx + 1) * hourMs - now
+    readonly property int slotIdx: Math.floor(now / slotMs)
+    readonly property real msLeft: (slotIdx + 1) * slotMs - now
     readonly property string countdown: Zones.formatCountdown(msLeft)
 
-    // Hour the displayed currentZone belongs to; used to detect rollover.
-    property int dataHour: -1
-    // After a rollover the API (cached ~60s) may still serve the previous hour.
+    // Slot the displayed currentZone belongs to; used to detect rollover.
+    property int dataSlot: -1
+    // After a rollover the API (cached ~60s) may still serve the previous slot.
     property bool awaitingRollover: false
     property string previousZone: ""
 
@@ -88,8 +88,8 @@ PlasmoidItem {
             var cur = data.current || (data.currentTerrorZone && data.currentTerrorZone.zone) || ""
             var nxt = data.next || (data.nextTerrorZone && data.nextTerrorZone.zone) || ""
 
-            if (awaitingRollover && cur === previousZone && (now - hourIdx * hourMs) < 10 * 60000) {
-                // Still the previous hour's data; keep the optimistic view and try again shortly.
+            if (awaitingRollover && cur === previousZone && (now - slotIdx * slotMs) < 5 * 60000) {
+                // Still the previous slot's data; keep the optimistic view and try again shortly.
                 retryTimer.restart()
                 return
             }
@@ -97,7 +97,7 @@ PlasmoidItem {
             errorMsg = ""
             currentZone = cur
             nextZone = nxt
-            dataHour = hourIdx
+            dataSlot = slotIdx
             hasData = true
             lastUpdated = new Date()
             rememberZone(cur)
@@ -113,7 +113,7 @@ PlasmoidItem {
             currentZone = nextZone
             nextZone = ""
         }
-        dataHour = hourIdx
+        dataSlot = slotIdx
         awaitingRollover = true
         rolloverFetch.restart()
     }
@@ -131,23 +131,23 @@ PlasmoidItem {
             return
         var cfg = Plasmoid.configuration
         if (currentWatched && cfg.notifyOnStart)
-            notify("start|" + hourIdx + "|" + currentZone,
+            notify("start|" + slotIdx + "|" + currentZone,
                    i18n("Terror zone active"),
                    i18n("%1 is terrorized now. Ends in %2.", currentZone, Zones.formatCountdown(msLeft)))
         if (!nextWatched)
             return
-        var startHour = hourIdx + 1
+        var startSlot = slotIdx + 1
         var remMs = cfg.reminderMinutes * 60000
         if (cfg.notifyOnAnnounce) {
-            notify("next|" + startHour + "|" + nextZone,
+            notify("next|" + startSlot + "|" + nextZone,
                    i18n("Upcoming terror zone"),
                    i18n("%1 becomes terrorized in %2.", nextZone, Zones.formatCountdown(msLeft)))
             // An announcement inside the reminder window already serves as the reminder.
             if (cfg.reminderMinutes > 0 && msLeft <= remMs)
-                notified["remind|" + startHour + "|" + nextZone] = true
+                notified["remind|" + startSlot + "|" + nextZone] = true
         }
         if (cfg.reminderMinutes > 0 && msLeft <= remMs)
-            notify("remind|" + startHour + "|" + nextZone,
+            notify("remind|" + startSlot + "|" + nextZone,
                    i18n("Terror zone starting soon"),
                    i18n("%1 becomes terrorized in %2.", nextZone, Zones.formatCountdown(msLeft)))
     }
@@ -170,7 +170,7 @@ PlasmoidItem {
         triggeredOnStart: true
         onTriggered: {
             root.now = Date.now()
-            if (root.hasData && root.dataHour !== -1 && root.hourIdx !== root.dataHour)
+            if (root.hasData && root.dataSlot !== -1 && root.slotIdx !== root.dataSlot)
                 root.handleRollover()
             root.checkNotifications()
         }
@@ -184,7 +184,7 @@ PlasmoidItem {
         onTriggered: root.fetchZones()
     }
 
-    // Give the API's cache a moment to turn over after the hour changes.
+    // Give the API's cache a moment to turn over after the zone changes.
     Timer {
         id: rolloverFetch
         interval: 15000

@@ -21,7 +21,7 @@ KCM.SimpleKCM {
             QQC2.SpinBox {
                 id: reminderMinutes
                 from: 0
-                to: 59
+                to: 29
             }
             QQC2.Label {
                 text: reminderMinutes.value === 0

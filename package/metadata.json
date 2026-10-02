@@ -9,7 +9,7 @@
         "Id": "com.github.p145085.d2rterrorzones",
         "License": "GPL-3.0-or-later",
         "Name": "D2R Terror Zones",
-        "Version": "1.0.0",
+        "Version": "1.1.0",
         "Website": "https://github.com/p145085/plasma-d2r-terrorzones"
     },
     "X-Plasma-API-Minimum-Version": "6.0"

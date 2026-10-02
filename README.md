@@ -2,7 +2,7 @@
 
 A Plasma 6 widget that shows the current and upcoming **Diablo II: Resurrected terror zones**
 (data from [d2runewizard.com](https://d2runewizard.com/terror-zone-tracker)), counts down to the
-next hourly rotation, and notifies you when zones you care about are about to become terrorized.
+next rotation (every 30 minutes), and notifies you when zones you care about are about to become terrorized.
 
 ![screenshot](screenshot.png)
 
@@ -39,9 +39,9 @@ cd package && zip -r ../d2r-terrorzones.plasmoid . && cd ..
 
 ## Notes
 
-The d2runewizard API only exposes the current and next zone, so notifications can't look further
-ahead than the next hour. Zones rotate at the top of every hour; the widget advances immediately
-and polls until the API catches up.
+Since patch 3.0 terror zones rotate every 30 minutes, on the hour and half hour. The d2runewizard
+API only exposes the current and next zone, so notifications can't look further ahead than the next
+rotation. At each rotation the widget advances immediately and polls until the API catches up.
 
 Not affiliated with Blizzard Entertainment or d2runewizard.com.
 
